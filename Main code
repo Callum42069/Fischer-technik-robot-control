@@ -1,0 +1,386 @@
+#include <SoftwareSerial.h> //includes a library for serial communication with processing
+//creates a string to store the data from the voice control
+String value;
+// shows the pins the relays are connected to
+int IN2 = 2;
+int IN3 = 3;
+int IN4 = 4;
+int IN5 = 5;
+int IN6 = 6;
+int IN7 = 7;
+int IN8 = 8;
+int IN9 = 9;
+int IN10 = 10;
+int IN11 = 11;
+int IN12 = A0;
+int IN13 = A1;
+int TxD = 12;
+int RxD = 13;
+SoftwareSerial bluetooth(TxD, RxD);
+
+#define ON   0 //defines the values for on and off
+#define OFF  1
+
+//setup code ran 1 time when code is first uploaded
+void setup() {
+  pinMode(10, INPUT);   //set pin as input , R limit switch
+  pinMode(11, INPUT);   //set pin as input , Z limit switch
+  pinMode(A0, INPUT);   //set pin as input , G limit switch
+  pinMode(A1, INPUT);   //set pin as input , y limit switch
+  relay_init();//initialize the relay
+  Serial.begin(9600);    //start serial communication @9600 bps
+  bluetooth.begin(9600); //starts bluetooth communication @9600 bps
+  }
+// looped code to work continuously so ulimited movements can be done
+void loop(){
+  Serial.println(value); //takes value from app on phone and stores it in 'value' 
+ if (bluetooth.available()) //Checks if data from bluetooth is available
+ {
+  value = bluetooth.readString(); //sets the data from the bluetooth device to value
+  if (value == "up"){ //if the value from the bluetooth device is  up
+      digitalWrite(4, LOW); //writes pin 4 to be low - turns on the relay to move up - no delay can be stopped with 'stop all' or will stop when hits limit switch
+    }
+  if (value == "down"){ //moves arm down
+      digitalWrite(5, LOW);
+      delay(2000);
+      digitalWrite(5, HIGH);      
+    }
+  if (value == "extend"){ //extends arm
+      digitalWrite(6, LOW);
+      delay(2000);
+      digitalWrite(6, HIGH);
+    }
+  if (value == "retract"){ //retracts arm
+      digitalWrite(7, LOW);
+    }
+  if (value == "open gripper"){ //opens gripper
+      digitalWrite(3, LOW);
+    }
+  if (value == "Close gripper"){  //closes gripper
+      digitalWrite(2, LOW);
+      delay(1000);
+      digitalWrite(2, HIGH);      
+    }
+  if (value == "rotate clockwise"){   //rotates clockwise
+      digitalWrite(8, LOW);
+    }
+  if (value == "rotate anticlockwise"){   //rotates anticlockwise
+      digitalWrite(9, LOW);
+      delay(2000);
+      digitalWrite(9, HIGH);      
+    }   
+  if (value == "stop all"){   //if the value from the bluetooth is stop all then all relays are set to high - all relays turn off
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN5, HIGH);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN8, HIGH);
+      digitalWrite(IN9, HIGH); 
+    }
+  if(value == "Safe Space"){  //Moves to start place
+      digitalWrite(IN8, LOW);
+      digitalWrite(IN4, LOW);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN7, LOW);        
+    }
+  if(value== "clean up this mess"){ //runs clean up scenario 
+      digitalWrite(IN9, LOW); //anticlockwise for 3 seconds
+      delay(1600);
+      digitalWrite(IN9, HIGH);
+      digitalWrite(IN5, LOW); //Goes down
+      delay(7400);
+      digitalWrite(IN5, HIGH);
+      digitalWrite(IN6, LOW); // extends arm
+      delay(7500);
+      digitalWrite(IN6, HIGH); 
+      digitalWrite(IN2, LOW); //closes gripper 
+      delay(2000);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN4, LOW); // goes up
+      delay(2000);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(6000);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN9, LOW); //turns anticlockwise to shelf
+      delay(5550);
+      digitalWrite(IN9, HIGH); 
+      digitalWrite(IN6, LOW); // extends arm
+      delay(6000);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(2200);
+      digitalWrite(IN3, HIGH); 
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(10000);
+      digitalWrite(IN7, HIGH);  
+      //Container 2 
+      digitalWrite(IN8, LOW); //turns clockwise to container 2
+      delay(2550);
+      digitalWrite(IN8, HIGH);
+      digitalWrite(IN5, LOW); //Goes down
+      delay(3000);
+      digitalWrite(IN5, HIGH); 
+      digitalWrite(IN6, LOW); // extends arm
+      delay(2500);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN2, LOW); //closes gripper 
+      delay(2000);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN4, LOW); // goes up
+      delay(2000);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(3000);
+      digitalWrite(IN7, HIGH); 
+      digitalWrite(IN9, LOW); //turns anticlockwise to shelf
+      delay(1900);
+      digitalWrite(IN9, HIGH);
+      digitalWrite(IN6, LOW); // extends arm
+      delay(9000);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(800);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(10000);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(2000);
+      digitalWrite(IN3, HIGH);
+      //Location 3
+      digitalWrite(IN4, LOW); // goes up
+      delay(6500);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN9, LOW); //turns anticlockwise to block 3
+      delay(5000);
+      digitalWrite(IN9, HIGH);
+      digitalWrite(IN6, LOW); // extends arm
+      delay(8000);
+      digitalWrite(IN6, HIGH); 
+      digitalWrite(IN5, LOW); //Goes down
+      delay(7000);
+      digitalWrite(IN5, HIGH); 
+      digitalWrite(IN2, LOW); //closes gripper 
+      delay(2000);
+      digitalWrite(IN2, HIGH);     
+      digitalWrite(IN4, LOW); // goes up
+      delay(8000);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(9000);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN8, LOW); //turns clockwise to shelf
+      delay(4500);
+      digitalWrite(IN8, HIGH);
+      digitalWrite(IN5, LOW); //Goes down
+      delay(2000);
+      digitalWrite(IN5, HIGH); 
+      digitalWrite(IN6, LOW); // extends arm
+      delay(9000);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(800);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(9000);
+      digitalWrite(IN7, HIGH);
+  }
+  }
+    
+  if(digitalRead(10)==LOW){ //if limit switch R is hit
+    digitalWrite(IN8,HIGH);  //set clockwise relay off1
+    }
+  if(digitalRead(11)==LOW){ //if limit switch Z is hit
+    digitalWrite(IN4,HIGH);  //set Zup relay off 
+    }
+  if(digitalRead(A0)==LOW){ //if limit switch G is hit
+    digitalWrite(IN3,HIGH);  //set the close gripper limit off
+    }
+  if(digitalRead(A1)==LOW){ //if limit switch Y is hit
+    digitalWrite(IN7,HIGH);  //set the Y down relay off 
+    }
+    
+  if(Serial.available()){  //id data is available to read from serial port
+    char val = Serial.read(); //read charcter from the serial port and set it to variable val   
+    if(val == 's'){       //Turn all relays off when button is pressed
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN5, HIGH);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN8, HIGH);
+      digitalWrite(IN9, HIGH);
+    }   
+    if(val == 'a'){       //open gripper if button is pressed
+      digitalWrite(IN3, LOW);
+      }
+    if(val == 'b'){       //close gripper if button is pressed
+      digitalWrite(IN2, LOW); 
+      delay(500);
+      digitalWrite(IN2,HIGH);
+      }
+    if(val == 'c'){       //Z moves up if button is pressed
+      digitalWrite(IN4, LOW);
+      }
+    if(val == 'd'){       //Z moves down if button is pressed
+      digitalWrite(IN5, LOW);
+      delay(1000);
+      digitalWrite(IN5, HIGH);
+      }
+    if(val == 'e'){       //Y goes up (extends) if button is pressed
+      digitalWrite(IN6, LOW);
+      delay(1000);
+      digitalWrite(IN6, HIGH);
+      }
+    if(val == 'f'){       //Y goes down (retracts) if button is pressed
+      digitalWrite(IN7, LOW);
+      }
+    if(val == 'g'){       //R turns clockwise if button is pressed
+      digitalWrite(IN8, LOW); 
+      }
+    if(val == 'h'){       //R turns anticlockwise if button is pressed
+      digitalWrite(IN9, LOW); 
+      delay(1000);
+      digitalWrite(IN9, HIGH);
+      }
+    if(val == 'j'){       //Moves to start place
+      digitalWrite(IN8, LOW);
+      digitalWrite(IN4, LOW);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN7, LOW);        
+      }
+    if(val == 'k'){       //Runs the clean up scenario
+      digitalWrite(IN9, LOW); //anticlockwise for 3 seconds
+      delay(1600);
+      digitalWrite(IN9, HIGH);
+      digitalWrite(IN5, LOW); //Goes down
+      delay(7400);
+      digitalWrite(IN5, HIGH);
+      digitalWrite(IN6, LOW); // extends arm
+      delay(7500);
+      digitalWrite(IN6, HIGH); 
+      digitalWrite(IN2, LOW); //closes gripper 
+      delay(2000);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN4, LOW); // goes up
+      delay(2000);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(6000);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN9, LOW); //turns anticlockwise to shelf
+      delay(5550);
+      digitalWrite(IN9, HIGH); 
+      digitalWrite(IN6, LOW); // extends arm
+      delay(6000);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(2200);
+      digitalWrite(IN3, HIGH); 
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(10000);
+      digitalWrite(IN7, HIGH);  
+      //Container 2 
+      digitalWrite(IN8, LOW); //turns clockwise to container 2
+      delay(2550);
+      digitalWrite(IN8, HIGH);
+      digitalWrite(IN5, LOW); //Goes down
+      delay(3000);
+      digitalWrite(IN5, HIGH); 
+      digitalWrite(IN6, LOW); // extends arm
+      delay(2500);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN2, LOW); //closes gripper 
+      delay(2000);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN4, LOW); // goes up
+      delay(2000);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(3000);
+      digitalWrite(IN7, HIGH); 
+      digitalWrite(IN9, LOW); //turns anticlockwise to shelf
+      delay(1900);
+      digitalWrite(IN9, HIGH);
+      digitalWrite(IN6, LOW); // extends arm
+      delay(9000);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(800);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(10000);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(2000);
+      digitalWrite(IN3, HIGH);
+      //Location 3
+      digitalWrite(IN4, LOW); // goes up
+      delay(6500);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN9, LOW); //turns anticlockwise to block 3
+      delay(5000);
+      digitalWrite(IN9, HIGH);
+      digitalWrite(IN6, LOW); // extends arm
+      delay(8000);
+      digitalWrite(IN6, HIGH); 
+      digitalWrite(IN5, LOW); //Goes down
+      delay(7000);
+      digitalWrite(IN5, HIGH); 
+      digitalWrite(IN2, LOW); //closes gripper 
+      delay(2000);
+      digitalWrite(IN2, HIGH);     
+      digitalWrite(IN4, LOW); // goes up
+      delay(8000);
+      digitalWrite(IN4, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(9000);
+      digitalWrite(IN7, HIGH);
+      digitalWrite(IN8, LOW); //turns clockwise to shelf
+      delay(4500);
+      digitalWrite(IN8, HIGH);
+      digitalWrite(IN5, LOW); //Goes down
+      delay(2000);
+      digitalWrite(IN5, HIGH); 
+      digitalWrite(IN6, LOW); // extends arm
+      delay(9000);
+      digitalWrite(IN6, HIGH);
+      digitalWrite(IN3, LOW); //opens gripper 
+      delay(800);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN7, LOW); // retracts arm
+      delay(9000);
+      digitalWrite(IN7, HIGH);
+      }
+    }
+}
+
+void relay_init(void)//initialize the relay
+{  
+  //set all the relays modes to OUTPUT
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  relay_SetStatus(OFF);//turn off all the relay
+}
+// sets the status of all the relays to status 1
+void relay_SetStatus( unsigned char status_1)
+{
+  digitalWrite(IN2, status_1);
+  digitalWrite(IN3, status_1);
+  digitalWrite(IN4, status_1);
+  digitalWrite(IN5, status_1);
+  digitalWrite(IN6, status_1);
+  digitalWrite(IN7, status_1);
+  digitalWrite(IN8, status_1);
+  digitalWrite(IN9, status_1);
+}
