@@ -1,0 +1,140 @@
+import controlP5.*; //import ControlP5 library
+import processing.serial.*; //import serial library
+
+Serial port;
+
+ControlP5 cp5; //create ControlP5 object
+PFont font;
+
+void setup(){ //same for arduino
+  size(800, 800);    //window size, (width, height)
+  port = new Serial(this, "COM4", 9600);  //Arduino is connected to COM4
+  cp5 = new ControlP5(this);
+  font = createFont("calibri light bold", 20);    //custom font for buttons and title
+  
+  cp5.addButton("AllStop")     //All stop function
+    .setPosition(100, 50)  //coordinates of upper left corner of button (x, y)
+    .setSize(120, 70)      //(width, height)
+    .setFont(font)         //font on button is set to the font
+    .setColorBackground( color( 255,0,0 ) )  //sets the background colour of the button to red
+  ;
+  
+  cp5.addButton("OpenGrip")     //open gripper button
+    .setPosition(100, 150)  //coordinates of upper left corner of button (x, y)
+    .setSize(120, 70)      //(width, height)
+    .setFont(font)
+  ;   
+
+  cp5.addButton("CloseGrip")     //close gripper button
+    .setPosition(230, 150)  
+    .setSize(120, 70)      
+    .setFont(font)
+  ;
+
+  cp5.addButton("Up")     //up button
+    .setPosition(100, 250)  
+    .setSize(120, 70)      
+    .setFont(font)
+  ;
+  
+  cp5.addButton("Down")     //down button
+  .setPosition(230, 250)  
+  .setSize(120, 70)      
+  .setFont(font)
+  ;
+  
+  cp5.addButton("ExtendArm")     //extend arm button
+  .setPosition(100, 350)  
+  .setSize(150, 70)     
+  .setFont(font)
+  ;
+
+  cp5.addButton("RetractArm")     //Retract arm button
+  .setPosition(260, 350)  
+  .setSize(150, 70)      
+  .setFont(font)
+  ;
+  
+  cp5.addButton("Clockwise")     //clockwise button
+  .setPosition(100, 450)  
+  .setSize(150, 70)      
+  .setFont(font)
+  ;
+
+  cp5.addButton("AntiClockwise")   //anticlockwise button
+  .setPosition(260, 450) 
+  .setSize(170, 70)      
+  .setFont(font)
+  ;  
+  
+  
+  cp5.addButton("SafeSpace")  //Safespace button
+  .setPosition(480, 50)  
+  .setSize(120, 70)      
+  .setFont(font)
+  .setColorBackground( color( 0,255,0 ) )
+  ;  
+
+  cp5.addButton("CleanUp")  //clean up function
+  .setPosition(480, 150)  
+  .setSize(120, 70)      
+  .setFont(font)
+  ; 
+
+}
+
+void draw(){  //same as loop in arduino
+  background(255, 255 , 255); // background color of window (r, g, b) or (0 to 255)
+  //Sets up text for titles
+  fill(0, 0, 0);               //text color (r, g, b)
+  textFont(font);
+  text("GUI CONTROL", 80, 30);  //GUI title (x coordinate, y coordinat)
+  text("Scenario's:", 480, 30);  //Scenario title (x coordinate, y coordinat)
+}
+
+//when a button is pressed, a char is sent over the serial port
+
+void OpenGrip(){  //when button is pressed
+  port.write('a');  //char 'a' is written to the port
+}
+
+void CloseGrip(){
+  port.write('b');  //char 'b' is written to the port
+}
+
+void Up(){
+  port.write('c');  //char 'c' is written to the port
+}
+
+void AllStop(){
+  port.write('s');  //char 's' is written to the port
+}
+
+void Down(){
+  port.write('d');  //char 'd' is written to the port
+}
+
+void ExtendArm(){
+  port.write('e');  //char 'e' is written to the port
+}
+
+void RetractArm(){
+  port.write('f');  //char 'f' is written to the port
+}
+
+void Clockwise(){
+  port.write('g');  //char 'g' is written to the port
+}
+
+void AntiClockwise(){
+  port.write('h');  //char 'h' is written to the port
+}
+
+
+void SafeSpace(){
+  port.write('j');  //char 'j' is written to the port
+}
+
+void CleanUp(){
+  port.write('k');  //char 'k' is written to the port
+}
